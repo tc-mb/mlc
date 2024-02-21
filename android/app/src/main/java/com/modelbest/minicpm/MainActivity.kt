@@ -260,7 +260,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         chatState = AppViewModel(this.application).ChatState()
+        
         requestPermission(this)
+        
         // if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED){
         //     ActivityCompat.requestPermissions(this,
         //         arrayOf(
@@ -283,6 +285,7 @@ class MainActivity : ComponentActivity() {
         //     requestPermissionLauncher.launch(
         //         android.Manifest.permission.CAMERA)
         // }
+        
         setContent {
             Surface(
                 modifier = Modifier
@@ -295,6 +298,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // 弹窗请求读取文件、相机权限，实测对红米K40有效
     private fun requestPermission(activity: Activity){
         val permissions = arrayOf(
             "android.permission.READ_EXTERNAL_STORAGE",
