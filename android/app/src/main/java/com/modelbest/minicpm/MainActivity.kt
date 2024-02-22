@@ -263,28 +263,28 @@ class MainActivity : ComponentActivity() {
         
         requestPermission(this)
         
-        // if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED){
-        //     ActivityCompat.requestPermissions(this,
-        //         arrayOf(
-        //             android.Manifest.permission.READ_MEDIA_IMAGES,
-        //             android.Manifest.permission.READ_MEDIA_AUDIO,
-        //             android.Manifest.permission.READ_MEDIA_VIDEO,
-        //             ),
-        //         1
-        //     )
-        //     requestPermissionLauncher.launch(
-        //         android.Manifest.permission.READ_MEDIA_IMAGES)
-        // }
-        // if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
-        //     ActivityCompat.requestPermissions(this,
-        //         arrayOf(
-        //             android.Manifest.permission.CAMERA,
-        //         ),
-        //         0
-        //     )
-        //     requestPermissionLauncher.launch(
-        //         android.Manifest.permission.CAMERA)
-        // }
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                arrayOf(
+                    android.Manifest.permission.READ_MEDIA_IMAGES,
+                    android.Manifest.permission.READ_MEDIA_AUDIO,
+                    android.Manifest.permission.READ_MEDIA_VIDEO,
+                    ),
+                1
+            )
+            requestPermissionLauncher.launch(
+                android.Manifest.permission.READ_MEDIA_IMAGES)
+        }
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                arrayOf(
+                    android.Manifest.permission.CAMERA,
+                ),
+                0
+            )
+            requestPermissionLauncher.launch(
+                android.Manifest.permission.CAMERA)
+        }
         
         setContent {
             Surface(
