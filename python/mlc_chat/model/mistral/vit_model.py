@@ -138,7 +138,7 @@ class Conv2d(nn.Module):
         x: Tensor,
     ):
         x = op.conv2d(x, self.weight, stride=self.stride)
-        x = x + self.bias.reshape([1, self.bias.shape[0], 1, 1])
+        x = x + self.bias.reshape(1, self.bias.shape[0], 1, 1)
         return x
 
 class PatchEmbed(nn.Module):
@@ -153,8 +153,8 @@ class PatchEmbed(nn.Module):
         inputs: Tensor
     ):
         embed = self.proj(inputs)
-        embed = embed.reshape([embed.shape[0], embed.shape[1], embed.shape[2]*embed.shape[3]])
-        return embed.permute_dims([0, 2, 1])
+        embed = embed.reshape(embed.shape[0], embed.shape[1], embed.shape[2]*embed.shape[3])
+        return embed.permute_dims(0, 2, 1)
 
 class ViT(nn.Module):
     def __init__(self, config: ViTConfig):

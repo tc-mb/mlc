@@ -615,9 +615,9 @@ class ResamplerAttention(nn.Module):  # pylint: disable=too-many-instance-attrib
         b, sq, _ = q.shape
         _, sk, _ = k.shape
         assert b == 1, "Only support batch size 1 at this moment."
-        q = self.q_proj(q).reshape([b, sq, h, d])
-        k = self.k_proj(k).reshape([b, sk, h, d])
-        v = self.v_proj(v).reshape([b, sk, h, d])
+        q = self.q_proj(q).reshape(b, sq, h, d)
+        k = self.k_proj(k).reshape(b, sk, h, d)
+        v = self.v_proj(v).reshape(b, sk, h, d)
         output = op_ext.attention(q, k, v, attention_mask)
         return self.out_proj(output)
 
@@ -670,8 +670,8 @@ class Resampler(nn.Module):
         )
 
         x = self.attn(
-            (q + self.pos_embed).reshape([1, q.shape[0], q.shape[1]]),
-            x + self.pos_embed_k.reshape([1, self.pos_embed_k.shape[0], self.pos_embed_k.shape[1]]),
+            (q + self.pos_embed).reshape(1, q.shape[0], q.shape[1]),
+            x + self.pos_embed_k.reshape(1, self.pos_embed_k.shape[0], self.pos_embed_k.shape[1]),
             x,
             attention_mask
         )
