@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Rect
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
@@ -64,6 +65,13 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.lang.Math.abs
+import java.lang.Math.ceil
+import java.lang.Math.log
+import java.lang.Math.max
+import java.lang.Math.min
+import java.lang.Math.round
+import java.lang.Math.sqrt
 
 
 @ExperimentalMaterial3Api
@@ -173,7 +181,7 @@ fun compressImage(image: Bitmap): Bitmap? {
         ByteArrayInputStream(baos.toByteArray()) //把压缩后的数据baos存放到ByteArrayInputStream中
     return BitmapFactory.decodeStream(isBm, null, null) //把ByteArrayInputStream数据生成图片
 }
-fun scaleSize(image: Bitmap, newW : Int, newH: Int): Bitmap {
+fun ResizeBitmap(image: Bitmap, newW : Int, newH: Int): Bitmap {
     return Bitmap.createScaledBitmap(image, newW, newH, true)
 }
 
@@ -202,7 +210,16 @@ fun getImage(srcPath: String?): Bitmap? { //3 * 224 * 224
     //重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了
     bitmap = BitmapFactory.decodeFile(srcPath, newOpts)
     //return compressImage(bitmap) //压缩好比例大小后再进行质量压缩
-    return scaleSize(bitmap, 224, 224)
+    return ResizeBitmap(bitmap, 224, 224)
+}
+
+fun getOriginalImage(srcPath: String?): Bitmap? { //3 * 224 * 224
+    return try {
+        BitmapFactory.decodeFile(srcPath)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
 }
 
 fun bitmapToBytes(bitmap: Bitmap): IntArray {
@@ -224,6 +241,166 @@ fun bitmapToBytes(bitmap: Bitmap): IntArray {
         }
     }
     return pixels
+}
+
+fun ensure_divide(length: Int, patch_size: Int): Int {
+    return max((round(length.toDouble() / patch_size) * patch_size).toInt(), patch_size)
+}
+
+data class ImageShape(val width: Int, val height: Int)
+fun find_best_resize(
+    original_size : IntArray ,
+    scale_resolution: Int,
+    patch_size: Int,
+    allow_upscale : Boolean=false): ImageShape {
+    var width = original_size[0]
+    var height = original_size[1]
+    if ((width * height > scale_resolution * scale_resolution) || allow_upscale){
+        val r = width.toDouble() / height
+        height = (scale_resolution.toDouble() / sqrt(r)).toInt()
+        width = (height * r).toInt()
+    }
+
+    var best_width = ensure_divide(width, patch_size)
+    var best_height = ensure_divide(height, patch_size)
+    return  ImageShape(best_width, best_height)
+}
+
+fun get_refine_size(
+    original_size: IntArray,
+    grid : IntArray,
+    scale_resolution : Int,
+    patch_size : Int,
+    allow_upscale: Boolean=false
+): ImageShape {
+    var width = original_size[0]
+    var height = original_size[1]
+    var grid_x = grid[0]
+    var grid_y = grid[1]
+
+    var refine_width = ensure_divide(width, grid_x)
+    var refine_height = ensure_divide(height, grid_y)
+
+    var grid_width = refine_width / grid_x
+    var grid_height = refine_height / grid_y
+
+    var best_grid_size = find_best_resize(
+        intArrayOf(grid_width, grid_height),
+        scale_resolution,
+        patch_size,
+        allow_upscale
+    )
+
+    var refine_size = ImageShape(best_grid_size.width * grid_x, best_grid_size.height * grid_y)
+
+    return refine_size
+
+}
+
+/**
+ * x和y是起始点
+ * width和height是从起始点开始要裁剪的宽和高
+ */
+fun CropBitmap(source: Bitmap, x: Int, y: Int, width: Int, height: Int): Bitmap {
+    // 创建一个新的Bitmap，其中包含裁剪后的图像
+    val croppedBitmap = Bitmap.createBitmap(width, height, source.config)
+
+    // 创建一个画布来绘制裁剪后的图像
+    val canvas = android.graphics.Canvas(croppedBitmap)
+
+    // 定义裁剪的区域
+    val cropRect = Rect(x, y, x + width, y + height)
+
+    // 使用画布绘制裁剪区域
+    canvas.drawBitmap(source, cropRect, Rect(0, 0, width, height), null)
+
+    return croppedBitmap
+}
+fun split_to_patches(image : Bitmap, grid: IntArray): Array<Bitmap> {
+    var patches = arrayOf<Bitmap>()
+    var width = image.width
+    var height = image.height
+    var grid_x = width / grid[0]
+    var grid_y = height / grid[1]
+
+    for (i in 0..height step grid_y){
+        var images = arrayOf<Bitmap>()
+        for (j in 0..width step grid_x){
+            //var box = intArrayOf(j, i, j + grid_x, i + grid_y) //left, top, right, bottom
+            //python: image.crop(box)
+            var patch = CropBitmap(image, j, i, grid_x, grid_y)
+            images += patch
+        }
+        patches += images
+    }
+    return patches
+
+}
+
+data class SliceResult(val image: Bitmap, val patchs: Array<Bitmap>, var best_grid: IntArray)
+fun SliceImage(
+    image: Bitmap,
+    max_slice_nums: Int=9,
+    scale_resolution: Int=448,
+    patch_size: Int=14,
+    never_split: Boolean=false): SliceResult {
+    val original_height = image.height
+    val original_width = image.width
+    val original_size = intArrayOf(original_width, original_height)
+    val log_ratio = log(original_width.toDouble() / original_height.toDouble())
+    val ratio = (original_width * original_height).toDouble() / (scale_resolution * scale_resolution)
+    val multiple = min(ceil(ratio).toInt(), max_slice_nums)
+    var source_image : Bitmap
+    var best_grid = intArrayOf(1, 1)
+
+    var patches : Array<Bitmap> = arrayOf<Bitmap>()
+
+    if (multiple <= 1 || never_split){
+        var best_size = find_best_resize(
+            original_size, scale_resolution, patch_size, allow_upscale=true
+        )
+        source_image = ResizeBitmap(image, best_size.width, best_size.height)
+    }else{
+        var candidate_split_grids_nums : IntArray = intArrayOf()
+        for (i in intArrayOf(multiple - 1, multiple, multiple + 1)) {
+            if (i == 1 || i > max_slice_nums) {
+                continue
+            }
+            candidate_split_grids_nums += i
+        }
+        //source image, down-sampling and ensure divided by patch_size
+        var best_resize = find_best_resize(original_size, scale_resolution, patch_size)
+        source_image = ResizeBitmap(image, best_resize.width, best_resize.height)
+        var candidate_grids = arrayOf<IntArray>()
+
+        //find best grid
+        for (split_grids_nums in candidate_split_grids_nums){
+            var m = 1
+            while (m <= split_grids_nums){
+                if (split_grids_nums % m == 0){
+                    candidate_grids += intArrayOf(m, split_grids_nums / m)
+                }
+                m += 1
+            }
+        }
+
+        var min_error = Float.POSITIVE_INFINITY
+        for (grid in candidate_grids) {
+            var error = abs(log_ratio - log(grid[0].toDouble() / grid[1].toDouble()))
+            if (error < min_error){
+                best_grid = grid
+                min_error = error.toFloat()
+            }
+        }
+
+        var refine_size = get_refine_size(
+            original_size, best_grid, scale_resolution, patch_size, allow_upscale=true
+        )
+
+        var refine_image = ResizeBitmap(image, refine_size.width, refine_size.height)
+        patches = split_to_patches(refine_image, best_grid)
+    }
+    return SliceResult(source_image, patches, best_grid)
 }
 
 
@@ -258,6 +435,7 @@ fun MessageView(messageData: MessageData, activity: Activity) {
             ) {
                 if (messageData.image_path != "") {
                     var bitmap = getImage(messageData.image_path)
+                    var original_bitmap = getOriginalImage(messageData.image_path)
                     if (bitmap != null) {
                         val image_data = bitmapToBytes(bitmap)
                         Log.v("get_image", image_data.size.toString())
