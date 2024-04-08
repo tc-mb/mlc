@@ -236,6 +236,7 @@ fun saveImageToGallery(context: Activity, bitmap: Bitmap): String {
 class MainActivity : ComponentActivity() {
     var image_path = ""
     var has_image = false
+    var slice_nums = 0
 
     lateinit var chatState: AppViewModel.ChatState
     val requestPermissionLauncher =

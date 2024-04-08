@@ -4,6 +4,7 @@ Implementation for Mistral architecture.
 import dataclasses
 from typing import Any, Dict, Optional
 
+import tvm
 from tvm import relax as rx
 from tvm import te, tir
 from tvm.relax.frontend import nn
@@ -629,7 +630,8 @@ class Resampler(nn.Module):
         self.image_len = config.image_len
 
         self.pos_embed = nn.Parameter((self.num_queries, self.embed_dim))
-        self.pos_embed_k = nn.Parameter((self.image_len, self.embed_dim))
+        #self.pos_embed_k = nn.Parameter((self.image_len, self.embed_dim))
+        self.pos_embed_k = nn.Parameter((448*448//14//14, self.embed_dim))
         self.query = nn.Parameter((self.num_queries, self.embed_dim))
         self.kv_proj = nn.Linear(self.kv_dim, self.embed_dim, bias=False)
         self.ln_q = nn.LayerNorm(self.embed_dim, config.norm_eps)
@@ -643,7 +645,24 @@ class Resampler(nn.Module):
     def forward(
         self, 
         x : Tensor,
+        tgt_size,
     ):
+        # print(self.pos_embed_k)
+        # print(self.pos_embed_k.data)
+        # print(tgt_size)
+        #if self.pos_embed_k.data is None:
+        #    pos_embed = op.zeros((tgt_size[0] * tgt_size[1], self.embed_dim), dtype=self.pos_embed_k.dtype)
+        #else:
+        #    #pos_embed = self.pos_embed_k.data().reshape(32, 32, self.embed_dim)[:tgt_size[0], :tgt_size[1]].reshape(tgt_size[0] * tgt_size[1], self.embed_dim)
+        #    op.take(self.pos_embed_k)
+        pos_embed = self.pos_embed_k.reshape(32, 32, self.embed_dim)
+        indices_x = nn.core.wrap_nested(tvm.relax.op.arange(0, tgt_size[0], dtype="int32"), "arange")
+        indices_y = nn.core.wrap_nested(tvm.relax.op.arange(0, tgt_size[1], dtype="int32"), "arange")
+        print(pos_embed)
+        print(indices_x)
+        pos_embed = op.take(pos_embed, indices_x, axis=0)
+        pos_embed = op.take(pos_embed, indices_y, axis=1).reshape(tgt_size[0] * tgt_size[1], self.embed_dim)
+
         x = self.kv_proj(x)
         x = self.ln_kv(x)
 
@@ -669,12 +688,14 @@ class Resampler(nn.Module):
             ],
         )
 
+        # print(x.shape, pos_embed.shape, q.shape, self.pos_embed.shape)
         x = self.attn(
             (q + self.pos_embed).reshape(1, q.shape[0], q.shape[1]),
-            x + self.pos_embed_k.reshape(1, self.pos_embed_k.shape[0], self.pos_embed_k.shape[1]),
+            x + pos_embed.reshape(1, pos_embed.shape[0], pos_embed.shape[1]),
             x,
             attention_mask
         )
+        # print("end")
 
         x = self.ln_post(x)
 
@@ -697,8 +718,10 @@ class VisMiniCPM(nn.Module):
         cache_offset: tir.Var,
     ):
         inputs = (inputs.astype(self.dtype) / 255. - 0.5) / 0.5
+        shape = inputs.shape
+        print("before resampler: ", shape)
         inputs = self.vpm(inputs)
-        inputs = self.resampler(inputs)
+        inputs = self.resampler(inputs, ((shape[-2] + 13) // 14, (shape[-1] + 13) // 14))
         return self.llm.prefill_embed(inputs, rolling_cache_len, kv_seq_len, cache_offset)
 
     def prefill(

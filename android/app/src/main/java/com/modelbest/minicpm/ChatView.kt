@@ -10,6 +10,7 @@ import android.graphics.Rect
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -357,9 +358,10 @@ fun SliceImage(
 
     if (multiple <= 1 || never_split){
         var best_size = find_best_resize(
-            original_size, scale_resolution, patch_size, allow_upscale=true
+            original_size, scale_resolution, patch_size, allow_upscale=false
         )
-        source_image = ResizeBitmap(image, best_size.width, best_size.height)
+        //source_image = ResizeBitmap(image, best_size.width, best_size.height)
+        source_image = ResizeBitmap(image, 224, 224)
     }else{
         var candidate_split_grids_nums : IntArray = intArrayOf()
         for (i in intArrayOf(multiple - 1, multiple, multiple + 1)) {
@@ -370,7 +372,8 @@ fun SliceImage(
         }
         //source image, down-sampling and ensure divided by patch_size
         var best_resize = find_best_resize(original_size, scale_resolution, patch_size)
-        source_image = ResizeBitmap(image, best_resize.width, best_resize.height)
+        //source_image = ResizeBitmap(image, best_resize.width, best_resize.height)
+        source_image = ResizeBitmap(image, 224, 224)
         var candidate_grids = arrayOf<IntArray>()
 
         //find best grid
@@ -397,7 +400,8 @@ fun SliceImage(
             original_size, best_grid, scale_resolution, patch_size, allow_upscale=true
         )
 
-        var refine_image = ResizeBitmap(image, refine_size.width, refine_size.height)
+        //var refine_image = ResizeBitmap(image, refine_size.width, refine_size.height)
+        var refine_image = ResizeBitmap(image, 224, 224)
         patches = split_to_patches(refine_image, best_grid)
     }
     return SliceResult(source_image, patches, best_grid)
@@ -438,6 +442,7 @@ fun MessageView(messageData: MessageData, activity: Activity) {
                     var original_bitmap = getOriginalImage(messageData.image_path)
                     if (bitmap != null) {
                         val image_data = bitmapToBytes(bitmap)
+                        val slice_result = original_bitmap?.let { SliceImage(it,max_slice_nums=1) }
                         Log.v("get_image", image_data.size.toString())
 
                         Image(
@@ -453,7 +458,23 @@ fun MessageView(messageData: MessageData, activity: Activity) {
                                 .widthIn(max = 300.dp)
                         )
                         if (!local_activity.has_image) {
-                            local_activity.chatState.requestImage(image_data)
+                            if (slice_result != null) {
+                                var image_datas = arrayOf<IntArray>()
+                                var image = slice_result.image
+                                var image_data = bitmapToBytes(image)
+                                image_datas += image_data
+                                Log.v("image size = ", image.height.toString() + ", " + image.width.toString())
+
+                                var steps : Int = 0
+                                for (image in slice_result.patchs){
+                                    var resize_image = ResizeBitmap(image, 224, 224)
+                                    image_datas += bitmapToBytes(resize_image)
+                                    Log.v("requestImage ", steps.toString())
+                                }
+                                local_activity.chatState.requestImage(image_datas, 224, 224)
+                                local_activity.slice_nums = slice_result.patchs.size
+                            }
+                            //local_activity.chatState.requestImage(image_data)
                         }
                         local_activity.has_image = true
                     }
@@ -538,7 +559,7 @@ fun SendMessageView(chatState: AppViewModel.ChatState, activity: Activity) {
         IconButton(
             onClick = {
                 localFocusManager.clearFocus()
-                chatState.requestGenerate(text)
+                chatState.requestGenerate(text, local_activity.slice_nums)
                 text = ""
             },
             modifier = Modifier
