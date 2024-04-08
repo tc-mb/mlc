@@ -621,7 +621,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-        fun requestImage(imgs: Array<IntArray>, height: Int, width: Int): Future<*>? {
+        fun requestImage(imgs: Array<IntArray>, height: Int, width: Int, cols: Int): Future<*>? {
             //require(chatable())
             var newText = ""
             switchToGenerating()
@@ -630,11 +630,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 var steps = 0
                 for (img in imgs) {
                     report.value = "Image processing $steps, $height, $width"
-                    callBackend { backend.image(img, steps, height, width) }
-                    steps += 1
-                    if(steps >= 2){
-                        break
+                    var new_line = 0
+                    if (steps > 0 && steps % cols == 0){
+                        new_line = 1
                     }
+                    callBackend { backend.image(img, steps, height, width, new_line) }
+                    steps += 1
                 }
                 has_user_prompt = true
                 viewModelScope.launch {

@@ -55,14 +55,14 @@ public class ChatModule {
         prefillFunc.pushArg(input).invoke();
     }
 
-    public void image(int[] inp, int steps, int height, int width) {
+    public void image(int[] inp, int steps, int height, int width, int new_line) {
         //int C = 3, H = 224, W = 224;
         int C = 3, H = height, W = width;
         long[] shape = {1, C, H, W};
         NDArray img = NDArray.empty(shape, new TVMType("int32"));
         img.copyFrom(inp);
         //imageFunc.pushArg(img).invoke();
-        imageFunc.pushArg(img).pushArg(steps).pushArg(height).pushArg(width).invoke();
+        imageFunc.pushArg(img).pushArg(steps).pushArg(height).pushArg(width).pushArg(new_line).invoke();
     }
 
     public String getMessage() {

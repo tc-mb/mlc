@@ -844,14 +844,18 @@ class LLMChat {
    * \param decode_next_token Whether to decode next token.
    * \param place_in_prompt The place of the input message in the prompt.
    */
-  void ImageStep(NDArray img, int steps) {
+  void ImageStep(NDArray img, int steps, int new_line) {
     if(steps == 0){
       PrefillStep("<用户><image>", true, false);
     }else{
       if(steps == 1){
         PrefillStep("</image><slice><image>", true, false);
       }else{
-        PrefillStep("</image><image>", true, false);
+        if (new_line){
+          PrefillStep("</image>\n<image>", true, false);
+        }else{
+          PrefillStep("</image><image>", true, false);
+        }
       }
     }
    

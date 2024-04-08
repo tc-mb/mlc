@@ -471,7 +471,8 @@ fun MessageView(messageData: MessageData, activity: Activity) {
                                     image_datas += bitmapToBytes(resize_image)
                                     Log.v("requestImage ", steps.toString())
                                 }
-                                local_activity.chatState.requestImage(image_datas, 224, 224)
+                                var best_grid = slice_result.best_grid
+                                local_activity.chatState.requestImage(image_datas, 224, 224, best_grid[0])
                                 local_activity.slice_nums = slice_result.patchs.size
                             }
                             //local_activity.chatState.requestImage(image_data)
