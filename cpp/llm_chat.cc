@@ -1588,15 +1588,16 @@ class LLMChatModule : public ModuleNode {
       });
     } else if (name == "image") {
       return PackedFunc([this, sptr_to_self](TVMArgs args, TVMRetValue* rv) {
-        ICHECK(1 <= args.size() && args.size() <= 4);
-        if (args.size() == 4) {
+        ICHECK(1 <= args.size() && args.size() <= 5);
+        if (args.size() == 5) {
           NDArray img = args[0];
           int steps = args[1];
           int height = args[2];
           int width = args[3];
+          int newline = args[4];
           NDArray d_img = NDArray::Empty({1, 3, height, width}, DataType::Int(32), device_);
           d_img.CopyFrom(img);
-          GetChat()->ImageStep(d_img, steps);
+          GetChat()->ImageStep(d_img, steps, newline);
         }
       });
     } else if (name == "prefill") {

@@ -636,6 +636,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                     }
                     callBackend { backend.image(img, steps, height, width, new_line) }
                     steps += 1
+                    if (steps >= 2) {break}
                 }
                 has_user_prompt = true
                 viewModelScope.launch {
