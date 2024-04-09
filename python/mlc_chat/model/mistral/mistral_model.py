@@ -319,6 +319,7 @@ class MistralDecoderLayer(nn.Module):
             _set(self.mlp.down_proj, tp.ShardSingleDim("_shard_mlp_down", dim=1))
 
         self.tensor_parallel_shards = config.tensor_parallel_shards
+        self.residual_scale = 40 if config.hidden_size == 2304 else 52
         _set_tp()
 
     def forward(  # pylint: disable=too-many-arguments
@@ -332,7 +333,7 @@ class MistralDecoderLayer(nn.Module):
         """Forward pass of a decoder layer; calculate attention, and add an residual connection."""
 
         def _apply_residual(out, residual):
-            scale_out = out * 1.4 / 40**0.5
+            scale_out = out * 1.4 / self.residual_scale**0.5
             if self.tensor_parallel_shards > 1:
                 return op.ccl_allreduce(scale_out + residual / self.tensor_parallel_shards, "sum")
             return scale_out + residual
@@ -387,6 +388,8 @@ class MistralForCasualLM(nn.Module):
         # self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
         self.vocab_size = config.vocab_size
         self.sliding_window_size = config.sliding_window_size
+        self.scale_embed = 12.0
+        self.scale_lmhead = 9.0 if config.hidden_size == 2304 else 6.0
         self.dtype = "float32"
 
     def to(self, dtype: Optional[str] = None):
@@ -400,7 +403,7 @@ class MistralForCasualLM(nn.Module):
     ):
         if self.model.tensor_parallel_shards > 1:
             inputs = op.ccl_broadcast_from_worker0(inputs)
-        inputs = self.model.embed_tokens(inputs) * 12.0
+        inputs = self.model.embed_tokens(inputs) * self.scale_embed
         return inputs
 
     def forward(  # pylint: disable=too-many-arguments
@@ -422,8 +425,8 @@ class MistralForCasualLM(nn.Module):
         )
         hidden_states = op.tensor_expr_op(_index, name_hint="index", args=[hidden_states])
         w = op.permute_dims(self.model.embed_tokens.weight)
-        logits = op.matmul(hidden_states / 9.0, w)
-        # logits = self.lm_head(hidden_states / 9.0)
+        logits = op.matmul(hidden_states / self.scale_lmhead, w)
+        # logits = self.lm_head(hidden_states)
         if logits.dtype != "float32":
             logits = logits.astype("float32")
         return logits
@@ -749,7 +752,7 @@ class VisMiniCPM(nn.Module):
     def get_default_spec(self):
         """Needed for ``export_tvm()``."""
         batch_size = 1
-        image_size = 224
+        image_size = 448
         mod_spec = {
             "image": {
                 "inputs": nn.spec.Tensor([batch_size, 3, image_size, image_size], "int32"),

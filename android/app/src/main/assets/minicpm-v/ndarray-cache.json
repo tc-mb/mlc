@@ -1,8 +1,8 @@
 {
     "metadata": {
         "ParamSize": 898,
-        "ParamBytes": 2950341440.0,
-        "BitsPerParam": 7.483529237910287
+        "ParamBytes": 2952110912.0,
+        "BitsPerParam": 7.485917575658407
     },
     "records": [
         {
@@ -4198,7 +4198,7 @@
         {
             "dataPath": "params_shard_33.bin",
             "format": "raw-shard",
-            "nbytes": 29771680,
+            "nbytes": 31541152,
             "records": [
                 {
                     "name": "vpm.blocks.9.attn.qkv.weight",
@@ -4340,12 +4340,12 @@
                     "name": "vpm.pos_embed",
                     "shape": [
                         1,
-                        256,
+                        1024,
                         1152
                     ],
                     "dtype": "float16",
                     "format": "f32-to-bf16",
-                    "nbytes": 589824,
+                    "nbytes": 2359296,
                     "byteOffset": 29177248
                 },
                 {
@@ -4356,10 +4356,10 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 4608,
-                    "byteOffset": 29767072
+                    "byteOffset": 31536544
                 }
             ],
-            "md5sum": "26760816d44a881d826ee92bb4692d5f"
+            "md5sum": "3b0465eb5dacf342c63d8433766ccfb3"
         },
         {
             "dataPath": "params_shard_34.bin",

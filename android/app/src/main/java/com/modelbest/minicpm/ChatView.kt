@@ -186,7 +186,7 @@ fun ResizeBitmap(image: Bitmap, newW : Int, newH: Int): Bitmap {
     return Bitmap.createScaledBitmap(image, newW, newH, true)
 }
 
-fun getImage(srcPath: String?): Bitmap? { //3 * 224 * 224
+fun getImage(srcPath: String?): Bitmap? { // display
     if (TextUtils.isEmpty(srcPath)) //如果图片路径为空 直接返回
         return null
     val newOpts = BitmapFactory.Options()
@@ -197,8 +197,8 @@ fun getImage(srcPath: String?): Bitmap? { //3 * 224 * 224
     val w = newOpts.outWidth
     val h = newOpts.outHeight
     //现在主流手机比较多是800*480分辨率，所以高和宽我们设置为
-    val hh = 224f //这里设置高度为224f
-    val ww = 224f //这里设置宽度为224f
+    val hh = 448f
+    val ww = 448f
     //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
     var be = 1 //be=1表示不缩放
     if (w > h && w > ww) { //如果宽度大的话根据宽度固定大小缩放
@@ -211,10 +211,10 @@ fun getImage(srcPath: String?): Bitmap? { //3 * 224 * 224
     //重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了
     bitmap = BitmapFactory.decodeFile(srcPath, newOpts)
     //return compressImage(bitmap) //压缩好比例大小后再进行质量压缩
-    return ResizeBitmap(bitmap, 224, 224)
+    return ResizeBitmap(bitmap, 448, 448)
 }
 
-fun getOriginalImage(srcPath: String?): Bitmap? { //3 * 224 * 224
+fun getOriginalImage(srcPath: String?): Bitmap? {
     return try {
         BitmapFactory.decodeFile(srcPath)
     } catch (e: Exception) {
@@ -324,9 +324,9 @@ fun split_to_patches(image : Bitmap, grid: IntArray): Array<Bitmap> {
     var grid_x = width / grid[0]
     var grid_y = height / grid[1]
 
-    for (i in 0..height step grid_y){
+    for (i in 0..height-1 step grid_y){
         var images = arrayOf<Bitmap>()
-        for (j in 0..width step grid_x){
+        for (j in 0..width-1 step grid_x){
             //var box = intArrayOf(j, i, j + grid_x, i + grid_y) //left, top, right, bottom
             //python: image.crop(box)
             var patch = CropBitmap(image, j, i, grid_x, grid_y)
@@ -360,8 +360,7 @@ fun SliceImage(
         var best_size = find_best_resize(
             original_size, scale_resolution, patch_size, allow_upscale=false
         )
-        //source_image = ResizeBitmap(image, best_size.width, best_size.height)
-        source_image = ResizeBitmap(image, 224, 224)
+        source_image = image
     }else{
         var candidate_split_grids_nums : IntArray = intArrayOf()
         for (i in intArrayOf(multiple - 1, multiple, multiple + 1)) {
@@ -372,8 +371,7 @@ fun SliceImage(
         }
         //source image, down-sampling and ensure divided by patch_size
         var best_resize = find_best_resize(original_size, scale_resolution, patch_size)
-        //source_image = ResizeBitmap(image, best_resize.width, best_resize.height)
-        source_image = ResizeBitmap(image, 224, 224)
+        source_image = image
         var candidate_grids = arrayOf<IntArray>()
 
         //find best grid
@@ -400,8 +398,7 @@ fun SliceImage(
             original_size, best_grid, scale_resolution, patch_size, allow_upscale=true
         )
 
-        //var refine_image = ResizeBitmap(image, refine_size.width, refine_size.height)
-        var refine_image = ResizeBitmap(image, 224, 224)
+        var refine_image = ResizeBitmap(image, refine_size.width, refine_size.height)
         patches = split_to_patches(refine_image, best_grid)
     }
     return SliceResult(source_image, patches, best_grid)
@@ -442,7 +439,7 @@ fun MessageView(messageData: MessageData, activity: Activity) {
                     var original_bitmap = getOriginalImage(messageData.image_path)
                     if (bitmap != null) {
                         val image_data = bitmapToBytes(bitmap)
-                        val slice_result = original_bitmap?.let { SliceImage(it,max_slice_nums=1) }
+                        val slice_result = original_bitmap?.let { SliceImage(it) }
                         Log.v("get_image", image_data.size.toString())
 
                         Image(
@@ -459,20 +456,22 @@ fun MessageView(messageData: MessageData, activity: Activity) {
                         )
                         if (!local_activity.has_image) {
                             if (slice_result != null) {
+                                var height = 448
+                                var width = 448
                                 var image_datas = arrayOf<IntArray>()
-                                var image = slice_result.image
+                                var image = ResizeBitmap(slice_result.image, width, height)
                                 var image_data = bitmapToBytes(image)
                                 image_datas += image_data
                                 Log.v("image size = ", image.height.toString() + ", " + image.width.toString())
 
                                 var steps : Int = 0
                                 for (image in slice_result.patchs){
-                                    var resize_image = ResizeBitmap(image, 224, 224)
+                                    var resize_image = ResizeBitmap(image, width, height)
                                     image_datas += bitmapToBytes(resize_image)
                                     Log.v("requestImage ", steps.toString())
                                 }
                                 var best_grid = slice_result.best_grid
-                                local_activity.chatState.requestImage(image_datas, 224, 224, best_grid[0])
+                                local_activity.chatState.requestImage(image_datas, height, width, best_grid[0])
                                 local_activity.slice_nums = slice_result.patchs.size
                             }
                             //local_activity.chatState.requestImage(image_data)

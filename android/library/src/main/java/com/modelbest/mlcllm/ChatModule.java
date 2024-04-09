@@ -56,7 +56,6 @@ public class ChatModule {
     }
 
     public void image(int[] inp, int steps, int height, int width, int new_line) {
-        //int C = 3, H = 224, W = 224;
         int C = 3, H = height, W = width;
         long[] shape = {1, C, H, W};
         NDArray img = NDArray.empty(shape, new TVMType("int32"));

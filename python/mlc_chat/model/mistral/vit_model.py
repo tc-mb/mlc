@@ -32,7 +32,7 @@ class ViTConfig(ConfigBase):  # pylint: disable=too-many-instance-attributes
     channels_in : int = 3
     image_size : int = 448
     conv_size : int = 14
-    image_len : int = 256 # (224/14)**2
+    image_len : int = (448//14)**2
     num_query : int = 64
     output_dim : int = 2304
     kwargs: Dict[str, Any] = dataclasses.field(default_factory=dict)
