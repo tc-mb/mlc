@@ -4,6 +4,7 @@ Implementation for Mistral architecture.
 import dataclasses
 from typing import Any, Dict, Optional
 
+import tvm
 from tvm import relax as rx
 from tvm import te, tir
 from tvm.relax.frontend import nn
@@ -318,6 +319,7 @@ class MistralDecoderLayer(nn.Module):
             _set(self.mlp.down_proj, tp.ShardSingleDim("_shard_mlp_down", dim=1))
 
         self.tensor_parallel_shards = config.tensor_parallel_shards
+        self.residual_scale = 40 if config.hidden_size == 2304 else 52
         _set_tp()
 
     def forward(  # pylint: disable=too-many-arguments
@@ -331,7 +333,7 @@ class MistralDecoderLayer(nn.Module):
         """Forward pass of a decoder layer; calculate attention, and add an residual connection."""
 
         def _apply_residual(out, residual):
-            scale_out = out * 1.4 / 40**0.5
+            scale_out = out * 1.4 / self.residual_scale**0.5
             if self.tensor_parallel_shards > 1:
                 return op.ccl_allreduce(scale_out + residual / self.tensor_parallel_shards, "sum")
             return scale_out + residual
@@ -386,6 +388,8 @@ class MistralForCasualLM(nn.Module):
         # self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
         self.vocab_size = config.vocab_size
         self.sliding_window_size = config.sliding_window_size
+        self.scale_embed = 12.0
+        self.scale_lmhead = 9.0 if config.hidden_size == 2304 else 6.0
         self.dtype = "float32"
 
     def to(self, dtype: Optional[str] = None):
@@ -399,7 +403,7 @@ class MistralForCasualLM(nn.Module):
     ):
         if self.model.tensor_parallel_shards > 1:
             inputs = op.ccl_broadcast_from_worker0(inputs)
-        inputs = self.model.embed_tokens(inputs) * 12.0
+        inputs = self.model.embed_tokens(inputs) * self.scale_embed
         return inputs
 
     def forward(  # pylint: disable=too-many-arguments
@@ -421,8 +425,8 @@ class MistralForCasualLM(nn.Module):
         )
         hidden_states = op.tensor_expr_op(_index, name_hint="index", args=[hidden_states])
         w = op.permute_dims(self.model.embed_tokens.weight)
-        logits = op.matmul(hidden_states / 9.0, w)
-        # logits = self.lm_head(hidden_states / 9.0)
+        logits = op.matmul(hidden_states / self.scale_lmhead, w)
+        # logits = self.lm_head(hidden_states)
         if logits.dtype != "float32":
             logits = logits.astype("float32")
         return logits
@@ -629,7 +633,8 @@ class Resampler(nn.Module):
         self.image_len = config.image_len
 
         self.pos_embed = nn.Parameter((self.num_queries, self.embed_dim))
-        self.pos_embed_k = nn.Parameter((self.image_len, self.embed_dim))
+        #self.pos_embed_k = nn.Parameter((self.image_len, self.embed_dim))
+        self.pos_embed_k = nn.Parameter((448*448//14//14, self.embed_dim))
         self.query = nn.Parameter((self.num_queries, self.embed_dim))
         self.kv_proj = nn.Linear(self.kv_dim, self.embed_dim, bias=False)
         self.ln_q = nn.LayerNorm(self.embed_dim, config.norm_eps)
@@ -643,7 +648,24 @@ class Resampler(nn.Module):
     def forward(
         self, 
         x : Tensor,
+        tgt_size,
     ):
+        # print(self.pos_embed_k)
+        # print(self.pos_embed_k.data)
+        # print(tgt_size)
+        #if self.pos_embed_k.data is None:
+        #    pos_embed = op.zeros((tgt_size[0] * tgt_size[1], self.embed_dim), dtype=self.pos_embed_k.dtype)
+        #else:
+        #    #pos_embed = self.pos_embed_k.data().reshape(32, 32, self.embed_dim)[:tgt_size[0], :tgt_size[1]].reshape(tgt_size[0] * tgt_size[1], self.embed_dim)
+        #    op.take(self.pos_embed_k)
+        pos_embed = self.pos_embed_k.reshape(32, 32, self.embed_dim)
+        indices_x = nn.core.wrap_nested(tvm.relax.op.arange(0, tgt_size[0], dtype="int32"), "arange")
+        indices_y = nn.core.wrap_nested(tvm.relax.op.arange(0, tgt_size[1], dtype="int32"), "arange")
+        print(pos_embed)
+        print(indices_x)
+        pos_embed = op.take(pos_embed, indices_x, axis=0)
+        pos_embed = op.take(pos_embed, indices_y, axis=1).reshape(tgt_size[0] * tgt_size[1], self.embed_dim)
+
         x = self.kv_proj(x)
         x = self.ln_kv(x)
 
@@ -669,12 +691,14 @@ class Resampler(nn.Module):
             ],
         )
 
+        # print(x.shape, pos_embed.shape, q.shape, self.pos_embed.shape)
         x = self.attn(
             (q + self.pos_embed).reshape(1, q.shape[0], q.shape[1]),
-            x + self.pos_embed_k.reshape(1, self.pos_embed_k.shape[0], self.pos_embed_k.shape[1]),
+            x + pos_embed.reshape(1, pos_embed.shape[0], pos_embed.shape[1]),
             x,
             attention_mask
         )
+        # print("end")
 
         x = self.ln_post(x)
 
@@ -697,8 +721,10 @@ class VisMiniCPM(nn.Module):
         cache_offset: tir.Var,
     ):
         inputs = (inputs.astype(self.dtype) / 255. - 0.5) / 0.5
+        shape = inputs.shape
+        print("before resampler: ", shape)
         inputs = self.vpm(inputs)
-        inputs = self.resampler(inputs)
+        inputs = self.resampler(inputs, ((shape[-2] + 13) // 14, (shape[-1] + 13) // 14))
         return self.llm.prefill_embed(inputs, rolling_cache_len, kv_seq_len, cache_offset)
 
     def prefill(
@@ -726,7 +752,7 @@ class VisMiniCPM(nn.Module):
     def get_default_spec(self):
         """Needed for ``export_tvm()``."""
         batch_size = 1
-        image_size = 224
+        image_size = 448
         mod_spec = {
             "image": {
                 "inputs": nn.spec.Tensor([batch_size, 3, image_size, image_size], "int32"),

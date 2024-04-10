@@ -25,6 +25,7 @@ import java.util.Timer
 import java.util.TimerTask
 import java.util.UUID
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import kotlin.concurrent.thread
 
 
@@ -620,23 +621,32 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-        fun requestImage(img: IntArray) {
-            require(chatable())
+        fun requestImage(imgs: Array<IntArray>, height: Int, width: Int, cols: Int): Future<*>? {
+            //require(chatable())
             var newText = ""
             switchToGenerating()
             Toast.makeText(application, "Image Processing...", Toast.LENGTH_SHORT).show()
-            executorService.submit {
-                if (!callBackend { backend.image(img) }) return@submit
+            var f = executorService.submit {
+                var steps = 0
+                for (img in imgs) {
+                    report.value = "Image processing $steps, $height, $width"
+                    var new_line = 0
+                    if (steps > 0 && steps % cols == 0){
+                        new_line = 1
+                    }
+                    callBackend { backend.image(img, steps, height, width, new_line) }
+                    steps += 1
+                }
                 has_user_prompt = true
                 viewModelScope.launch {
-                    report.value = "Image process is done, ask any question"
+                    report.value = "Image $steps process is done, ask any question"
                     if (modelChatState.value == ModelChatState.Generating) switchToReady()
                 }
             }
-
+            return f
         }
 
-        fun requestGenerate(prompt: String) {
+        fun requestGenerate(prompt: String, steps: Int) {
             require(chatable())
             var newText = ""
             switchToGenerating()
@@ -644,7 +654,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 appendMessage(MessageRole.User, prompt)
                 appendMessage(MessageRole.Bot, "")
                 if (has_user_prompt) {
-                    if (!callBackend { backend.prefill("</image>" + prompt + "<AI>") }) return@submit
+                    if (steps == 0){
+                        if (!callBackend { backend.prefill("</image>" + prompt + "<AI>") }) return@submit
+                    }else{
+                        if (!callBackend { backend.prefill("</image></slice>" + prompt + "<AI>") }) return@submit
+                    }
                     has_user_prompt = false
                 } else {
                     if (is_first_ask && !modelName.value.endsWith("-V")) {

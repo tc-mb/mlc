@@ -1,8 +1,8 @@
 {
     "metadata": {
         "ParamSize": 898,
-        "ParamBytes": 2946802496.0,
-        "BitsPerParam": 7.478748540353469
+        "ParamBytes": 2952110912.0,
+        "BitsPerParam": 7.485917575658407
     },
     "records": [
         {
@@ -140,7 +140,7 @@
                     "byteOffset": 28210176
                 }
             ],
-            "md5sum": "f8e67c90b09aac2224d5904e63e58c0e"
+            "md5sum": "35e881a0efe648d25103b9fa7e33067b"
         },
         {
             "dataPath": "params_shard_1.bin",
@@ -235,7 +235,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "0396e3fb3c2e5390da2bd35437bd06c1"
+            "md5sum": "21f1eebdca43e049d6b3aa5e63e15e5e"
         },
         {
             "dataPath": "params_shard_2.bin",
@@ -384,7 +384,7 @@
                     "byteOffset": 30196224
                 }
             ],
-            "md5sum": "11a00c2997f26c892a74297db6fea4ac"
+            "md5sum": "fb73ea3fb64c204a020b307341493942"
         },
         {
             "dataPath": "params_shard_3.bin",
@@ -501,7 +501,7 @@
                     "byteOffset": 20740608
                 }
             ],
-            "md5sum": "ef0e9206b7a37cc3fbeac9010d160a8a"
+            "md5sum": "860d07237df0044ddcc09fafb2a8f22c"
         },
         {
             "dataPath": "params_shard_4.bin",
@@ -658,7 +658,7 @@
                     "byteOffset": 29878272
                 }
             ],
-            "md5sum": "7daf6065d76a70a1f5b5f822f0c2ff6e"
+            "md5sum": "613cf80845cbabf67bad7f564a8022a7"
         },
         {
             "dataPath": "params_shard_5.bin",
@@ -709,12 +709,12 @@
                     "byteOffset": 31850496
                 }
             ],
-            "md5sum": "2b1c44924657428b1fb1b61f37568346"
+            "md5sum": "b70f08ce50cf05ab62a298950a385886"
         },
         {
             "dataPath": "params_shard_6.bin",
             "format": "raw-shard",
-            "nbytes": 31002624,
+            "nbytes": 31880448,
             "records": [
                 {
                     "name": "resampler.attn.out_proj.weight",
@@ -801,12 +801,12 @@
                 {
                     "name": "resampler.pos_embed_k",
                     "shape": [
-                        256,
+                        1024,
                         2304
                     ],
                     "dtype": "float16",
                     "format": "f32-to-bf16",
-                    "nbytes": 1179648,
+                    "nbytes": 4718592,
                     "byteOffset": 15952896
                 },
                 {
@@ -818,7 +818,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 294912,
-                    "byteOffset": 17132544
+                    "byteOffset": 20671488
                 },
                 {
                     "name": "resampler.proj",
@@ -829,7 +829,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 10616832,
-                    "byteOffset": 17427456
+                    "byteOffset": 20966400
                 },
                 {
                     "name": "resampler.query",
@@ -840,7 +840,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 294912,
-                    "byteOffset": 28044288
+                    "byteOffset": 31583232
                 },
                 {
                     "name": "vpm.blocks.0.attn.proj.bias",
@@ -850,8 +850,16 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 2304,
-                    "byteOffset": 28339200
-                },
+                    "byteOffset": 31878144
+                }
+            ],
+            "md5sum": "c6c0bf99d5f816bd2e58612ea6e5a7c3"
+        },
+        {
+            "dataPath": "params_shard_7.bin",
+            "format": "raw-shard",
+            "nbytes": 33140128,
+            "records": [
                 {
                     "name": "vpm.blocks.0.attn.proj.weight",
                     "shape": [
@@ -861,7 +869,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 2654208,
-                    "byteOffset": 28341504
+                    "byteOffset": 0
                 },
                 {
                     "name": "vpm.blocks.0.attn.qkv.bias",
@@ -871,16 +879,8 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 6912,
-                    "byteOffset": 30995712
-                }
-            ],
-            "md5sum": "8c85b7bd0eead67f22ead18c9077ff53"
-        },
-        {
-            "dataPath": "params_shard_7.bin",
-            "format": "raw-shard",
-            "nbytes": 30479008,
-            "records": [
+                    "byteOffset": 2654208
+                },
                 {
                     "name": "vpm.blocks.0.attn.qkv.weight",
                     "shape": [
@@ -890,7 +890,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 7962624,
-                    "byteOffset": 0
+                    "byteOffset": 2661120
                 },
                 {
                     "name": "vpm.blocks.0.mlp.fc1.bias",
@@ -900,7 +900,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 8608,
-                    "byteOffset": 7962624
+                    "byteOffset": 10623744
                 },
                 {
                     "name": "vpm.blocks.0.mlp.fc1.weight",
@@ -911,7 +911,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 9916416,
-                    "byteOffset": 7971232
+                    "byteOffset": 10632352
                 },
                 {
                     "name": "vpm.blocks.0.mlp.fc2.bias",
@@ -921,7 +921,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 2304,
-                    "byteOffset": 17887648
+                    "byteOffset": 20548768
                 },
                 {
                     "name": "vpm.blocks.0.mlp.fc2.weight",
@@ -932,7 +932,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 9916416,
-                    "byteOffset": 17889952
+                    "byteOffset": 20551072
                 },
                 {
                     "name": "vpm.blocks.0.norm1.bias",
@@ -942,7 +942,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 2304,
-                    "byteOffset": 27806368
+                    "byteOffset": 30467488
                 },
                 {
                     "name": "vpm.blocks.0.norm1.weight",
@@ -952,7 +952,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 2304,
-                    "byteOffset": 27808672
+                    "byteOffset": 30469792
                 },
                 {
                     "name": "vpm.blocks.0.norm2.bias",
@@ -962,7 +962,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 2304,
-                    "byteOffset": 27810976
+                    "byteOffset": 30472096
                 },
                 {
                     "name": "vpm.blocks.0.norm2.weight",
@@ -972,7 +972,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 2304,
-                    "byteOffset": 27813280
+                    "byteOffset": 30474400
                 },
                 {
                     "name": "vpm.blocks.1.attn.proj.bias",
@@ -982,7 +982,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 2304,
-                    "byteOffset": 27815584
+                    "byteOffset": 30476704
                 },
                 {
                     "name": "vpm.blocks.1.attn.proj.weight",
@@ -993,7 +993,7 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 2654208,
-                    "byteOffset": 27817888
+                    "byteOffset": 30479008
                 },
                 {
                     "name": "vpm.blocks.1.attn.qkv.bias",
@@ -1003,10 +1003,10 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 6912,
-                    "byteOffset": 30472096
+                    "byteOffset": 33133216
                 }
             ],
-            "md5sum": "148154ffdd9609f708ea350a81447b4e"
+            "md5sum": "c3ad13cb76623ef5d880b2b9311dc535"
         },
         {
             "dataPath": "params_shard_8.bin",
@@ -1138,7 +1138,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "ff874568c12fe5939349233756af547b"
+            "md5sum": "45a5b2b91fa99add2a1743647e5dfcb0"
         },
         {
             "dataPath": "params_shard_9.bin",
@@ -1270,7 +1270,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "b2d9b7389d8659c55bb0170fedc6a7c6"
+            "md5sum": "7fcb2887fc163eddabf5bdcdc534b3ad"
         },
         {
             "dataPath": "params_shard_10.bin",
@@ -1402,7 +1402,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "0be2d0e1c41e3d8682563120ea67d256"
+            "md5sum": "68ed719e489bf53061f9f1b0ec99b580"
         },
         {
             "dataPath": "params_shard_11.bin",
@@ -1534,7 +1534,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "43ac6fdb63df609bf5c5b931ebfd02be"
+            "md5sum": "8edcd48dd209bd2dccfbb49897244fe9"
         },
         {
             "dataPath": "params_shard_12.bin",
@@ -1666,7 +1666,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "1b73e96ed7955451d7330c3e239a029d"
+            "md5sum": "4ae0f16883658cc23ef7ae87f4d8fc4d"
         },
         {
             "dataPath": "params_shard_13.bin",
@@ -1798,7 +1798,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "90a63aa3cbe6aa65d8015c5d04c7df81"
+            "md5sum": "ab50f345a4ac97461bf07c8408d87a6f"
         },
         {
             "dataPath": "params_shard_14.bin",
@@ -1930,7 +1930,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "13deb7bba1d6cf863c267af36ed5c328"
+            "md5sum": "9b3bdcef0674bc4656ecc1fda38f39ed"
         },
         {
             "dataPath": "params_shard_15.bin",
@@ -2062,7 +2062,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "f57edbac216a7abc1c7245d760dce3ae"
+            "md5sum": "0f260f95345406805c449ec965de283c"
         },
         {
             "dataPath": "params_shard_16.bin",
@@ -2194,7 +2194,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "01a87a1e2b9786b1f4f7bc035d1803a8"
+            "md5sum": "e1c9e9a7039ad2982e15f9402dd1a320"
         },
         {
             "dataPath": "params_shard_17.bin",
@@ -2326,7 +2326,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "d0f9d6766e8431dd36ad01804680ed57"
+            "md5sum": "1c27e2bdfec0defdbb610b2c85551131"
         },
         {
             "dataPath": "params_shard_18.bin",
@@ -2458,7 +2458,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "c3e939ecc6766101890195f9306541a7"
+            "md5sum": "c27aa9cf5c3d850bd5b5f8373a4d11be"
         },
         {
             "dataPath": "params_shard_19.bin",
@@ -2590,7 +2590,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "25ba703b48b99e3958a8c6e702260ac6"
+            "md5sum": "8dbcd4e41a6e8853e3907b32c2735c8f"
         },
         {
             "dataPath": "params_shard_20.bin",
@@ -2722,7 +2722,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "f978226ef7ffc676b7e378522c2f5d86"
+            "md5sum": "2afb946a41f7e6a3e320814ed8f2f840"
         },
         {
             "dataPath": "params_shard_21.bin",
@@ -2854,7 +2854,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "080440b5277f12b1a7a930179c07d844"
+            "md5sum": "af821f2a3624447a51e713b02c51ccf9"
         },
         {
             "dataPath": "params_shard_22.bin",
@@ -2986,7 +2986,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "92fd2ed2d8f130fa7b1f7b113e64f241"
+            "md5sum": "dda805e13ee7fcad796f1e45d5e6e42c"
         },
         {
             "dataPath": "params_shard_23.bin",
@@ -3118,7 +3118,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "93cd0cdbc450f195c4e55677ae9ca295"
+            "md5sum": "045f93b29c0d66e29f7e42ff9783ac3c"
         },
         {
             "dataPath": "params_shard_24.bin",
@@ -3250,7 +3250,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "cd8b3cb526ddd49ceff2a2896d0972af"
+            "md5sum": "eedb6dda6685e17f7a6b2c2eafd0f407"
         },
         {
             "dataPath": "params_shard_25.bin",
@@ -3382,7 +3382,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "439ac788d351c31e6f79c2295d29aa6f"
+            "md5sum": "19dd1f2ac66cca0491cd50c845dd94eb"
         },
         {
             "dataPath": "params_shard_26.bin",
@@ -3514,7 +3514,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "d10909380d314a2183f5fc41159f00cb"
+            "md5sum": "6788f4d1f7fa056b27ad996689ddf628"
         },
         {
             "dataPath": "params_shard_27.bin",
@@ -3646,7 +3646,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "27c258b5c7236a6c2350c509ca909a62"
+            "md5sum": "da49fda13457516aa8570c3443f3f872"
         },
         {
             "dataPath": "params_shard_28.bin",
@@ -3778,7 +3778,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "310e92af988bfd0044aaa1254816ca45"
+            "md5sum": "6af5d8de40f68c73db16e9610289f318"
         },
         {
             "dataPath": "params_shard_29.bin",
@@ -3910,7 +3910,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "f5e5eb08f57b993dd2e9072bfeda8c91"
+            "md5sum": "0d4ceca3b257163c00dc1068bea5224f"
         },
         {
             "dataPath": "params_shard_30.bin",
@@ -4042,7 +4042,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "c15edd322f242ec96a3111bf8e438169"
+            "md5sum": "287638c1f051e3824256437107a74204"
         },
         {
             "dataPath": "params_shard_31.bin",
@@ -4174,7 +4174,7 @@
                     "byteOffset": 30472096
                 }
             ],
-            "md5sum": "7dcdf464555a600541ad94f5250da0e4"
+            "md5sum": "b114610d1b36bf2553f674a0b8fab3fb"
         },
         {
             "dataPath": "params_shard_32.bin",
@@ -4193,12 +4193,12 @@
                     "byteOffset": 0
                 }
             ],
-            "md5sum": "9c9e93be3d2b223f6cf7126456b43b3d"
+            "md5sum": "02f59850bf732470b7c83d87210f4b79"
         },
         {
             "dataPath": "params_shard_33.bin",
             "format": "raw-shard",
-            "nbytes": 29771680,
+            "nbytes": 31541152,
             "records": [
                 {
                     "name": "vpm.blocks.9.attn.qkv.weight",
@@ -4340,12 +4340,12 @@
                     "name": "vpm.pos_embed",
                     "shape": [
                         1,
-                        256,
+                        1024,
                         1152
                     ],
                     "dtype": "float16",
                     "format": "f32-to-bf16",
-                    "nbytes": 589824,
+                    "nbytes": 2359296,
                     "byteOffset": 29177248
                 },
                 {
@@ -4356,10 +4356,10 @@
                     "dtype": "float16",
                     "format": "f32-to-bf16",
                     "nbytes": 4608,
-                    "byteOffset": 29767072
+                    "byteOffset": 31536544
                 }
             ],
-            "md5sum": "2545431e3e4a7829e259a041a05fe90d"
+            "md5sum": "3b0465eb5dacf342c63d8433766ccfb3"
         },
         {
             "dataPath": "params_shard_34.bin",
@@ -4454,7 +4454,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "9cb06aa4114a486cbf008b291e8d1ec3"
+            "md5sum": "0dbc5229b535940f8f1abb4a8ba99c7f"
         },
         {
             "dataPath": "params_shard_35.bin",
@@ -4603,7 +4603,7 @@
                     "byteOffset": 30196224
                 }
             ],
-            "md5sum": "09a771b23cfb9458100a86f5e74b89a2"
+            "md5sum": "5b9312985ea77d7a9bdead27bf54ed44"
         },
         {
             "dataPath": "params_shard_36.bin",
@@ -4720,7 +4720,7 @@
                     "byteOffset": 20740608
                 }
             ],
-            "md5sum": "f89bb4518e25a890bb16ac9f3d3d435c"
+            "md5sum": "3bc78c7b03657ecc6e3db691e11c8dd0"
         },
         {
             "dataPath": "params_shard_37.bin",
@@ -4847,7 +4847,7 @@
                     "byteOffset": 29864448
                 }
             ],
-            "md5sum": "5da6926dfee3c6739e4669f75da9100e"
+            "md5sum": "2eb9ae047f1d08451ca7b4371e959abb"
         },
         {
             "dataPath": "params_shard_38.bin",
@@ -4942,7 +4942,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "247bd5028375a15c11b899e539906dad"
+            "md5sum": "bcde85dcfe5102b8a3b976c22d702528"
         },
         {
             "dataPath": "params_shard_39.bin",
@@ -5091,7 +5091,7 @@
                     "byteOffset": 30196224
                 }
             ],
-            "md5sum": "16fb3675150461f7a1bb9df13c5f1be0"
+            "md5sum": "7a7512c0da8b04112754123dd03c0a54"
         },
         {
             "dataPath": "params_shard_40.bin",
@@ -5208,7 +5208,7 @@
                     "byteOffset": 20740608
                 }
             ],
-            "md5sum": "b48710093b51da2640f5e5f142361ef8"
+            "md5sum": "be9a5d488f8b31939678dc976702b803"
         },
         {
             "dataPath": "params_shard_41.bin",
@@ -5335,7 +5335,7 @@
                     "byteOffset": 29864448
                 }
             ],
-            "md5sum": "0e8cbae975ca71dc44ae631f6b22c420"
+            "md5sum": "ca4e619827037459ea9f8fe2154fd310"
         },
         {
             "dataPath": "params_shard_42.bin",
@@ -5430,7 +5430,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "648c566f3487af200e0dc9cb002f8224"
+            "md5sum": "67d703e1bbf6501fb8213036ee9bd843"
         },
         {
             "dataPath": "params_shard_43.bin",
@@ -5579,7 +5579,7 @@
                     "byteOffset": 30196224
                 }
             ],
-            "md5sum": "73c59912ad1af36101a6c62f8da3dd14"
+            "md5sum": "2ddf36644f25b8997edaee3186a463eb"
         },
         {
             "dataPath": "params_shard_44.bin",
@@ -5696,7 +5696,7 @@
                     "byteOffset": 20740608
                 }
             ],
-            "md5sum": "e5ced9410954a7cec21110d51499e3bf"
+            "md5sum": "e970d3419c57d33cae9353a42fceab1a"
         },
         {
             "dataPath": "params_shard_45.bin",
@@ -5823,7 +5823,7 @@
                     "byteOffset": 29864448
                 }
             ],
-            "md5sum": "626e7c4a5db1df0802d54809079a28e7"
+            "md5sum": "166b74ba4507e712827c3bcc015ec3c0"
         },
         {
             "dataPath": "params_shard_46.bin",
@@ -5918,7 +5918,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "9e32a2a7bb0c7f6efcc0e505665184c6"
+            "md5sum": "a69d268ece2807f675f4ba28cca72486"
         },
         {
             "dataPath": "params_shard_47.bin",
@@ -6067,7 +6067,7 @@
                     "byteOffset": 30196224
                 }
             ],
-            "md5sum": "a505e786f2899cc46243c8b0de7fda81"
+            "md5sum": "0d68b513081b20d4725b7e757df40d34"
         },
         {
             "dataPath": "params_shard_48.bin",
@@ -6184,7 +6184,7 @@
                     "byteOffset": 20740608
                 }
             ],
-            "md5sum": "e03554c06de67e4fb29b6608aaa31c36"
+            "md5sum": "ee1c975ff22c3d9a92ac7dc743837e4f"
         },
         {
             "dataPath": "params_shard_49.bin",
@@ -6311,7 +6311,7 @@
                     "byteOffset": 29864448
                 }
             ],
-            "md5sum": "7910e56543d3cb5dcfb6c19dba018e68"
+            "md5sum": "e39f521a2d80808243ccbb45ffda7e59"
         },
         {
             "dataPath": "params_shard_50.bin",
@@ -6406,7 +6406,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "b081e9ce76406bece34c43f47cebf6f3"
+            "md5sum": "05adac5518d4632c487f2b3636443685"
         },
         {
             "dataPath": "params_shard_51.bin",
@@ -6555,7 +6555,7 @@
                     "byteOffset": 30196224
                 }
             ],
-            "md5sum": "0dae08317909d7818eef76970c9109e1"
+            "md5sum": "b93523dc0644319d75b53e6e664621bf"
         },
         {
             "dataPath": "params_shard_52.bin",
@@ -6672,7 +6672,7 @@
                     "byteOffset": 20740608
                 }
             ],
-            "md5sum": "bcda53a84ed1d07fc894f0241634e313"
+            "md5sum": "86580fb013cda9b02b79b7284ece3f8e"
         },
         {
             "dataPath": "params_shard_53.bin",
@@ -6799,7 +6799,7 @@
                     "byteOffset": 29864448
                 }
             ],
-            "md5sum": "fd15ad0bc572f879c32d8c3f20bd72fd"
+            "md5sum": "39bed558a4fd2f42ef398c14bd5eddb5"
         },
         {
             "dataPath": "params_shard_54.bin",
@@ -6894,7 +6894,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "362038292afbef8b0435d1ee4ddee06f"
+            "md5sum": "50ea7c70ac913d7f9cac703a1ff80140"
         },
         {
             "dataPath": "params_shard_55.bin",
@@ -7043,7 +7043,7 @@
                     "byteOffset": 30196224
                 }
             ],
-            "md5sum": "4f5c574d3331360bfd1a18604c9960b4"
+            "md5sum": "32c56da14c68670bff9e3bcec790fb7d"
         },
         {
             "dataPath": "params_shard_56.bin",
@@ -7160,7 +7160,7 @@
                     "byteOffset": 20740608
                 }
             ],
-            "md5sum": "7013c8ed6b461fd9cda06229a8486a0b"
+            "md5sum": "cc12333f48379a33000e4c51f1c0f850"
         },
         {
             "dataPath": "params_shard_57.bin",
@@ -7287,7 +7287,7 @@
                     "byteOffset": 29864448
                 }
             ],
-            "md5sum": "2516356e68d8bcf4959c14eb31a54a8f"
+            "md5sum": "1c475d0582c4ccfb1a31bf70370fc289"
         },
         {
             "dataPath": "params_shard_58.bin",
@@ -7382,7 +7382,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "aba6756153304a0f6c56d5a52a3d4396"
+            "md5sum": "254dcb7dc16168dae1bcb49c47d612d4"
         },
         {
             "dataPath": "params_shard_59.bin",
@@ -7531,7 +7531,7 @@
                     "byteOffset": 30196224
                 }
             ],
-            "md5sum": "3a7b731cf7e8a5069e88022a7cf3e11c"
+            "md5sum": "4ccb623c56961d4a14127cf310d8a0f4"
         },
         {
             "dataPath": "params_shard_60.bin",
@@ -7648,7 +7648,7 @@
                     "byteOffset": 20740608
                 }
             ],
-            "md5sum": "afb75e39ac6e5ac35e0ca8ab552b57e0"
+            "md5sum": "74a771618a793fce90c7b5db6f2fea5a"
         },
         {
             "dataPath": "params_shard_61.bin",
@@ -7775,7 +7775,7 @@
                     "byteOffset": 29864448
                 }
             ],
-            "md5sum": "aac863feb913277c33dfa92115916151"
+            "md5sum": "64ef568084ecbff1c611d3e41aba463c"
         },
         {
             "dataPath": "params_shard_62.bin",
@@ -7870,7 +7870,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "24aba01f9f4c5df71362bd9ebf41ebf5"
+            "md5sum": "be4a2b25cfe5b4c41eebd0f36efc81fd"
         },
         {
             "dataPath": "params_shard_63.bin",
@@ -8019,7 +8019,7 @@
                     "byteOffset": 30196224
                 }
             ],
-            "md5sum": "fa7c7715bb3094655b08b14c7d6e7c08"
+            "md5sum": "6d00a96471ec6b2da46529dd222ac6c4"
         },
         {
             "dataPath": "params_shard_64.bin",
@@ -8136,7 +8136,7 @@
                     "byteOffset": 20740608
                 }
             ],
-            "md5sum": "ec13484b1d985a350d1238cb521b5807"
+            "md5sum": "52bda64d796b202d4b5d524ee59a6542"
         },
         {
             "dataPath": "params_shard_65.bin",
@@ -8263,7 +8263,7 @@
                     "byteOffset": 29864448
                 }
             ],
-            "md5sum": "59205ebfc3293e21dc4c43fedcc30eec"
+            "md5sum": "970375b93a1bc2e9896545afb1efe41a"
         },
         {
             "dataPath": "params_shard_66.bin",
@@ -8358,7 +8358,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "38966c64af05b7401433e5987d96cac6"
+            "md5sum": "5f08202dfa4888bb19fc6d9fcd4b07cd"
         },
         {
             "dataPath": "params_shard_67.bin",
@@ -8507,7 +8507,7 @@
                     "byteOffset": 30196224
                 }
             ],
-            "md5sum": "dacd9d1a9ea5a9ccdcb47a73bc800c17"
+            "md5sum": "402d9cdb76cee45b19ee96b115848a5f"
         },
         {
             "dataPath": "params_shard_68.bin",
@@ -8624,7 +8624,7 @@
                     "byteOffset": 20740608
                 }
             ],
-            "md5sum": "aedec8c57c9b1e15cd44789cf45627f3"
+            "md5sum": "af333716a27060a77bd1309dfea682e4"
         },
         {
             "dataPath": "params_shard_69.bin",
@@ -8751,7 +8751,7 @@
                     "byteOffset": 29864448
                 }
             ],
-            "md5sum": "0c67a5997aa42dcfc54b03f5684d4da1"
+            "md5sum": "7b74ba34b51889dc34948df6c504efcb"
         },
         {
             "dataPath": "params_shard_70.bin",
@@ -8846,7 +8846,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "d15eb41c6c16d399b515f4555a95dbbc"
+            "md5sum": "1884f7d17246c6c65d71f76b512c42cd"
         },
         {
             "dataPath": "params_shard_71.bin",
@@ -8995,7 +8995,7 @@
                     "byteOffset": 30196224
                 }
             ],
-            "md5sum": "e99e550c04372aa9cbd8156f6e210bc6"
+            "md5sum": "67bdd7015a394715f4b935865f07d5f0"
         },
         {
             "dataPath": "params_shard_72.bin",
@@ -9112,7 +9112,7 @@
                     "byteOffset": 20740608
                 }
             ],
-            "md5sum": "f157489f9c33409e636c20eec6bfc5ab"
+            "md5sum": "ac02b462700a37127c6b7008c0ff9a86"
         },
         {
             "dataPath": "params_shard_73.bin",
@@ -9229,7 +9229,7 @@
                     "byteOffset": 29532672
                 }
             ],
-            "md5sum": "181f9e3a0e26184879b253e076f1ef9d"
+            "md5sum": "e62639dffa8480de096da424ded83d15"
         },
         {
             "dataPath": "params_shard_74.bin",
@@ -9335,7 +9335,7 @@
                     "byteOffset": 31523328
                 }
             ],
-            "md5sum": "5cc30afeeaebf637d2893a981e01d063"
+            "md5sum": "03502bcbe2e396c002bdcc55c55e1f64"
         },
         {
             "dataPath": "params_shard_75.bin",
@@ -9473,7 +9473,7 @@
                     "byteOffset": 22404096
                 }
             ],
-            "md5sum": "77491e6bbf005e6343532a4b8dbbf7af"
+            "md5sum": "a18b564c182246e9494b4f35776a17d9"
         },
         {
             "dataPath": "params_shard_76.bin",
@@ -9600,7 +9600,7 @@
                     "byteOffset": 29864448
                 }
             ],
-            "md5sum": "feb31c390332005fc0163bf837360e1c"
+            "md5sum": "fe555e656ca09a653dad6cd536eb2213"
         },
         {
             "dataPath": "params_shard_77.bin",
@@ -9695,7 +9695,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "4d0cdf86538ab534bfd941628699420f"
+            "md5sum": "a3b3a6951a8987588d4d01f5e9bba1f6"
         },
         {
             "dataPath": "params_shard_78.bin",
@@ -9844,7 +9844,7 @@
                     "byteOffset": 30196224
                 }
             ],
-            "md5sum": "ff2ff8aea8a842c43ace1fc1f38f007e"
+            "md5sum": "5fd870ae774eb8be84a3bd5a4a12b724"
         },
         {
             "dataPath": "params_shard_79.bin",
@@ -9961,7 +9961,7 @@
                     "byteOffset": 20740608
                 }
             ],
-            "md5sum": "db6bc131658fb05704605d26bc8ae8b1"
+            "md5sum": "1d0cd0d59fb651ddafe82ee35b787b0d"
         },
         {
             "dataPath": "params_shard_80.bin",
@@ -10088,7 +10088,7 @@
                     "byteOffset": 29864448
                 }
             ],
-            "md5sum": "a38f38f89dddc71d7a576dac8eb8758d"
+            "md5sum": "d9559d4c1684bf9254309705b0e3240a"
         },
         {
             "dataPath": "params_shard_81.bin",
@@ -10183,7 +10183,7 @@
                     "byteOffset": 24887808
                 }
             ],
-            "md5sum": "d97db8366d54ce15478b837ffd00d36f"
+            "md5sum": "d2800904eaf9cbc7b0aaacfcd24ad75c"
         },
         {
             "dataPath": "params_shard_82.bin",
@@ -10246,7 +10246,7 @@
                     "byteOffset": 4976640
                 }
             ],
-            "md5sum": "ab2d9aa7d64339d68421417f5ddd983c"
+            "md5sum": "38ee4d8b0f6b09524bae331f6c4f8c11"
         }
     ]
 }

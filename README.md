@@ -6,7 +6,7 @@ Based on [MLC-LLM](https://github.com/mlc-ai/mlc-llm), we run MiniCPM and MiniCP
 
 ## Android APK
 
-0. Install [APK](https://openbmb.oss-cn-hongkong.aliyuncs.com/model_center/mobile/android/MiniCPM.apk)
+0. Install [APK](https://openbmb.oss-cn-hongkong.aliyuncs.com/model_center/mobile/android/MiniCPM-2.0.apk)
 
 1. Accept camera & photo permission: the permission are for MiniCPM-V which can process multimodel input (text + image)
 
@@ -72,7 +72,7 @@ MODEL_NAME=MiniCPM-V
 QUANTIZATION=q4f16_1
 MODEL_TYPE=minicpm_v
 mlc_chat convert_weight --model-type ${MODEL_TYPE} ./dist/models/${MODEL_NAME}-hf/ --quantization $QUANTIZATION -o dist/$MODEL_NAME/
-mlc_chat gen_config --model-type ${MODEL_TYPE} ./dist/models/${MODEL_NAME}-hf/ --quantization $QUANTIZATION --conv-template LM --sliding-window-size 768 -o dist/${MODEL_NAME}/
+mlc_chat gen_config --model-type ${MODEL_TYPE} ./dist/models/${MODEL_NAME}-hf/ --quantization $QUANTIZATION --conv-template LM --sliding-window-size 1024 -o dist/${MODEL_NAME}/
 mlc_chat compile --model-type ${MODEL_TYPE} dist/${MODEL_NAME}/mlc-chat-config.json --device android -o ./dist/libs/${MODEL_NAME}-android.tar
 cd ./android/library
 ./prepare_libs.sh

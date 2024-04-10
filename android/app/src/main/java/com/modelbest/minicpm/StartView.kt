@@ -122,6 +122,7 @@ fun ModelView(
     appViewModel: AppViewModel
 ) {
     var isDeletingModel by rememberSaveable { mutableStateOf(false) }
+    //navController.navigate("chat")
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -214,6 +215,7 @@ fun ModelView(
                     )
                 }
             }
+
         }
         LinearProgressIndicator(
             progress = modelState.progress.value.toFloat() / modelState.total.value,
