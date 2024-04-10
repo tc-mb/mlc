@@ -4,7 +4,7 @@
 
 ## 安卓安装包
 
-0. 安装 [安卓软件安装包](https://openbmb.oss-cn-hongkong.aliyuncs.com/model_center/mobile/android/MiniCPM.apk)
+0. 安装 [安卓软件安装包](https://openbmb.oss-cn-hongkong.aliyuncs.com/model_center/mobile/android/MiniCPM-2.0.apk)
 
 1. 允许相册、拍照权限：MiniCPM-V 模型处理多模态数据，需要相应权限来获取图片
 
