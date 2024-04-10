@@ -86,8 +86,12 @@ fun ChatView(
     Scaffold(topBar = {
         TopAppBar(
             title = {
+                var name = chatState.modelName.value
+                if (name.endsWith("-V")) {
+                    name = name + " 2.0"
+                }
                 Text(
-                    text = "Demo: " + chatState.modelName.value, //.split("-")[0],
+                    text = "Demo: " + name, //.split("-")[0],
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             },
