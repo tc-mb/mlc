@@ -6,7 +6,7 @@ Based on [MLC-LLM](https://github.com/mlc-ai/mlc-llm), we run MiniCPM and MiniCP
 
 ## Android APK
 
-0. Install [APK](https://openbmb.oss-cn-hongkong.aliyuncs.com/model_center/mobile/android/MiniCPM-2.0.apk)
+0. Install MiniCPM 1.2B and MiniCPM-V 2.0 [APK](https://openbmb.oss-cn-hongkong.aliyuncs.com/model_center/mobile/android/MiniCPM-2.0.apk) (old version can be found here: MiniCPM and MiniCPM-V [APK](https://openbmb.oss-cn-hongkong.aliyuncs.com/model_center/mobile/android/MiniCPM.apk))
 
 1. Accept camera & photo permission: the permission are for MiniCPM-V which can process multimodel input (text + image)
 
