@@ -87,9 +87,7 @@ fun ChatView(
         TopAppBar(
             title = {
                 var name = chatState.modelName.value
-                if (name.endsWith("-V")) {
-                    name = name + " 2.0"
-                }
+                name = name + " 2.0"
                 Text(
                     text = "Demo: " + name, //.split("-")[0],
                     color = MaterialTheme.colorScheme.onPrimary

@@ -55,7 +55,7 @@ fun StartView(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "MiniCPM Demo", color = MaterialTheme.colorScheme.onPrimary) },
+                title = { Text(text = "MiniCPM 2.0 Demo", color = MaterialTheme.colorScheme.onPrimary) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
             )
         },
@@ -136,7 +136,7 @@ fun ModelView(
                 .wrapContentHeight()
         ) {
             Text(
-                text = modelState.modelConfig.localId,
+                text = modelState.modelConfig.localId + " 2.0",
                 textAlign = TextAlign.Left,
                 modifier = Modifier
                     .wrapContentHeight()
