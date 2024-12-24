@@ -35,8 +35,8 @@
 
 参考 https://llm.mlc.ai/docs/deploy/android.html 去安装依赖
 
-其中 **Compile PyTorch Mdoels from HuggingFace** 这一步, 改成使用我们的 github 代码然后执行以下命令，来安装 mlc_chat 用于编译模型：
-```
+其中 **Compile PyTorch Models from HuggingFace** 这一步, 改成使用我们的 github 代码然后执行以下命令，来安装 mlc_chat 用于编译模型：
+```shell
 mkdir -p build && cd build
 # generate build configuration
 python3 ../cmake/gen_cmake_config.py && cd ..
@@ -51,7 +51,7 @@ cd python && pip install -e . && cd ..
 从 huggingface 下载模型放至 `dist/models`.
 
 对于 MiniCPM，运行
-```
+```shell
 MODEL_NAME=MiniCPM
 QUANTIZATION=q4f16_1
 MODEL_TYPE=minicpm
@@ -64,7 +64,7 @@ cd -
 ```
 
 对于 MiniCPM-V (视觉版本)，运行
-```
+```shell
 MODEL_NAME=MiniCPM-V
 QUANTIZATION=q4f16_1
 MODEL_TYPE=minicpm_v
